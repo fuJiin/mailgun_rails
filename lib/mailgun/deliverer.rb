@@ -37,15 +37,19 @@ module Mailgun
     end
 
     def build_basic_mailgun_message_for(rails_message)
-      {
+      options = {
         :from    => rails_message[:from].formatted,
         :to      => rails_message[:to].formatted,
-        :cc      => rails_message[:cc].formatted,
-        :bcc     => rails_message[:bcc].formatted,
         :subject => rails_message.subject,
         :html    => extract_html(rails_message),
         :text    => extract_text(rails_message)
       }
+      [:cc, :bcc].each do |key|
+        if rails_message[key]
+          options[key] = rails_message[key].formatted
+        end
+      end
+      options
     end
 
     def transform_reply_to(rails_message, mailgun_message)
