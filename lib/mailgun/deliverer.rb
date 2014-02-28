@@ -45,8 +45,13 @@ module Mailgun
         :text    => extract_text(rails_message)
       }
       [:cc, :bcc].each do |key|
-        if rails_message[key]
-          options[key] = rails_message[key].formatted
+        val = rails_message[key]
+        if val
+          options[key] = if val.respond_to?(:formatted)
+            rails_message[key].formatted
+          else
+            rails_message[key]
+          end
         end
       end
       options
