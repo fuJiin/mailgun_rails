@@ -38,13 +38,11 @@ module Mailgun
 
     def build_basic_mailgun_message_for(rails_message)
       options = {
-        :from    => rails_message[:from].formatted,
-        :to      => rails_message[:to].formatted,
         :subject => rails_message.subject,
         :html    => extract_html(rails_message),
         :text    => extract_text(rails_message)
       }
-      [:cc, :bcc].each do |key|
+      [:from, :to, :cc, :bcc].each do |key|
         val = rails_message[key]
         if val
           options[key] = if val.respond_to?(:formatted)
